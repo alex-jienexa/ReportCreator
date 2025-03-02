@@ -13,7 +13,7 @@ python -m venv venv
 ```
 3. Установите все зависимости через `requirements.txt`
 ```
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 ```
 4. Создадите и заполните `.env`-файл. Структура переменных описана в файле `.env.dist`
     - Значение `DEBUG` ставить на `True`, кроме случаев загрузки сайта на продакшн.
