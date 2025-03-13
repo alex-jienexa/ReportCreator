@@ -1,7 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 import companies.models as companies
 
-class User(models.Model):
+class CustomUser(AbstractUser):
     """
     Модель пользователя системы, который выполняет работу с системой.
     Каждый пользователь связан с конкретной компанией-исполнителем.
@@ -22,3 +23,6 @@ class User(models.Model):
     first_name = models.CharField(max_length=63, null=False)
     patronymic = models.CharField(max_length=63, null=True)
     company = models.ForeignKey(companies.Executor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.username

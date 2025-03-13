@@ -14,14 +14,19 @@
 Все данные о пользователях сохраняются в базе данных `auth_user`?
 """
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
+from .models import CustomUser
 from django import forms
+from companies import models as companies
 
 class SignUpForm(UserCreationForm):
+    last_name = forms.CharField(max_length=63, help_text='Введите вашу фамилию.')
+    first_name = forms.CharField(max_length=63, help_text='Введите ваше имя.')
+    patronymic = forms.CharField(max_length=63, required=False, help_text='Введите ваше отчество (если имеется).')
+    company = forms.ModelChoiceField(companies.Executor.objects.all(), help_text='Выберите вашу компанию.')
 
     class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        model = CustomUser
+        fields = ('username', 'last_name', 'first_name', 'patronymic', 'company', 'password1', 'password2')
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Имя пользователя')
