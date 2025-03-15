@@ -16,13 +16,14 @@ class CustomUser(AbstractUser):
     last_name - фамилия пользователя.
     first_name - имя пользователя.
     patronymic - отчество пользователя.
-    company - компания, которой принадлежит пользователь. Является полем таблицы `companies.Company`.
+    related_company - компания, которой принадлежит пользователь. Является полем таблицы `companies.Executor`.
     """
     username = models.CharField(max_length=150, unique=True, null=False)
     last_name = models.CharField(max_length=63, null=False)
     first_name = models.CharField(max_length=63, null=False)
     patronymic = models.CharField(max_length=63, null=True)
-    company = models.ForeignKey(companies.Executor, on_delete=models.CASCADE)
+    #company = models.CharField(max_length=150, null=True)
+    related_company = models.ForeignKey(companies.Executor, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.username

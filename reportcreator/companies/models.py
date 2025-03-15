@@ -22,6 +22,9 @@ class Company(models.Model):
     # director_name = models.CharField(max_length=64, null=False)
     # director_shortName = models.CharField(max_length=32, null=False) # check TODO
     director_username = models.CharField(max_length=64, null=False)
+
+    def __str__(self):
+        return self.company_name
     
 class Executor(Company):
     """

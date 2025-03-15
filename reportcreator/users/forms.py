@@ -22,11 +22,12 @@ class SignUpForm(UserCreationForm):
     last_name = forms.CharField(max_length=63, help_text='Введите вашу фамилию.')
     first_name = forms.CharField(max_length=63, help_text='Введите ваше имя.')
     patronymic = forms.CharField(max_length=63, required=False, help_text='Введите ваше отчество (если имеется).')
-    company = forms.ModelChoiceField(companies.Executor.objects.all(), help_text='Выберите вашу компанию.')
-
+    related_company = forms.ModelChoiceField(queryset=companies.Executor.objects.all(), help_text='Выберите вашу компанию. Если не уверены в вашей компании - оставьте поле пустым и обратитесь к Администратору.')
+    
+    # TODO: Написать проверку пароля так, чтобы он проверялся через регулярное выражение
     class Meta:
         model = CustomUser
-        fields = ('username', 'last_name', 'first_name', 'patronymic', 'company', 'password1', 'password2')
+        fields = ('username', 'last_name', 'first_name', 'patronymic', 'related_company', 'password1', 'password2')
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Имя пользователя')
