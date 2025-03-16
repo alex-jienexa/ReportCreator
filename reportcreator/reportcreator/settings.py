@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'pages',
     'companies',
     'users',
+    'documents',
 ]
 
 MIDDLEWARE = [

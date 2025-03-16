@@ -18,8 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from pages import views as pages_views
 from users.views import signup_view, login_view
+from documents.views import create_document, create_template
 
 urlpatterns = [
+    path('docs/create/', create_document, name='create-document'),
+    path('templates/create/', create_template, name='create-template'),
     path('signup/', signup_view, name='signup'),
     path('login/', login_view, name='login'),
     path('', pages_views.hello),
