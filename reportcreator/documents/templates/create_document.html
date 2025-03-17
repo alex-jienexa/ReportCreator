@@ -1,5 +1,33 @@
-<form method="post">
+<form method="post" id="document-form">
     {% csrf_token %}
     {{ form.as_p }}
+    <div id="additional-fields"></div>
     <button type="submit">Создать документ</button>
 </form>
+
+<button type="button" id="load-template">Загрузить шаблон</button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadButton = document.getElementById('load-template');
+        const additionalFields = document.getElementById('additional-fields');
+        const templateSelect = document.querySelector('select[name="template"]');
+
+        loadButton.addEventListener('click', async function() {
+            const templateId = templateSelect.value;
+            if (!templateId) return;
+
+            const response = await fetch(`/api/get-template-fields/${templateId}/`);
+            const data = await response.json();
+
+            additionalFields.innerHTML = '';
+            for (const [field, type] of Object.entries(data.custom)) {
+                const input = document.createElement('input');
+                input.type = type === 'date' ? 'date' : 'text';
+                input.name = `additional_data[${field}]`;
+                input.placeholder = field;
+                additionalFields.appendChild(input);
+            }
+        });
+    });
+</script>

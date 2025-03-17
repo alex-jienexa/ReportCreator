@@ -3,6 +3,8 @@ from companies.models import Executor, Contractor
 from users.models import CustomUser
 
 
+from django.db import models
+
 class Template(models.Model):
     """
     Модель для хранения шаблонов документов.
@@ -13,10 +15,19 @@ class Template(models.Model):
         ('REPORT', 'Отчёт'),
     ]
 
+    DATA_TYPES = [
+        ('text', 'Текст'),
+        ('number', 'Число'),
+        ('date', 'Дата'),
+        ('money', 'Денежная сумма'),
+        ('person', 'Личность'),
+    ]
+
     name = models.CharField(max_length=255, verbose_name="Название шаблона")
     type = models.CharField(max_length=10, choices=DOCUMENT_TYPES, verbose_name="Тип документа")
     file = models.FileField(upload_to='docs/templates/', verbose_name="Файл шаблона")
-    variables = models.JSONField(default=list, verbose_name="Переменные шаблона")
+    custom = models.JSONField(default=dict, verbose_name="Дополнительные переменные")
+    # TODO: Компания-заказчик, к которому относится шаблон
 
     def __str__(self):
         return self.name

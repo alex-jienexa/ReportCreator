@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from pages import views as pages_views
 from users.views import signup_view, login_view
-from documents.views import create_document, create_template
+from documents.views import create_document, create_template, get_template_fields
 
 urlpatterns = [
     path('docs/create/', create_document, name='create-document'),
     path('templates/create/', create_template, name='create-template'),
+    path('api/get-template-fields/<int:template_id>/', get_template_fields, name='get-template-fields'),
     path('signup/', signup_view, name='signup'),
     path('login/', login_view, name='login'),
     path('', pages_views.hello),

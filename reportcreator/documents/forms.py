@@ -6,15 +6,12 @@ from users.models import CustomUser
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = Template
-        fields = ['name', 'type', 'file', 'variables']
-        widgets = {
-            'variables': forms.Textarea(attrs={'placeholder': 'Введите переменные в формате JSON списка, например: ["поле1", "поле2"]'}),
-        }
+        fields = ['name', 'type', 'file']
 
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['template', 'id',  'contrator', 'executor', 'created_by', 'showDate', 'custom']
+        fields = ['template', 'id',  'contrator', 'executor', 'created_by', 'showDate']
         widgets = {
             'showDate': forms.DateInput(attrs={'type': 'date'}),
         }
