@@ -6,15 +6,17 @@ from users.models import CustomUser
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = Template
-        fields = ['name', 'type', 'file']
+        fields = ['name', 'type', 'file', 'related_company']
 
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['template', 'id',  'contrator', 'executor', 'created_by', 'showDate']
+        fields = ['template', 'id', 'contrator', 'executor', 'created_by', 'showDate']
         widgets = {
             'showDate': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    id = forms.IntegerField(required=True, initial=Document.objects.all().last().id + 1)
 
     def __init__(self, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
@@ -27,7 +29,7 @@ class DocumentForm(forms.ModelForm):
             try:
                 template_id = int(self.data.get('template'))
                 template = Template.objects.get(id=template_id)
-                for variable in template.variables:
+                for variable in template.get_deferred_fields():
                     self.fields[variable] = forms.CharField(label=variable)
             except (ValueError, Template.DoesNotExist):
                 pass

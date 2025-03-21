@@ -27,7 +27,7 @@ class Template(models.Model):
     type = models.CharField(max_length=10, choices=DOCUMENT_TYPES, verbose_name="Тип документа")
     file = models.FileField(upload_to='docs/templates/', verbose_name="Файл шаблона")
     custom = models.JSONField(default=dict, verbose_name="Дополнительные переменные")
-    # TODO: Компания-заказчик, к которому относится шаблон
+    related_company = models.ForeignKey(Contractor, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Связанная компания")
 
     def __str__(self):
         return self.name
@@ -51,7 +51,7 @@ class Document(models.Model):
             Задаётся в формате `dict` по типу {'поле1__тип-данных': 'значение1', 'поле2__тип-данных': 'значение2'}
     """
     
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigIntegerField(primary_key=True, verbose_name='Номер документа')
     template = models.ForeignKey(Template, on_delete=models.DO_NOTHING, verbose_name="Шаблон")
     contrator = models.ForeignKey(Contractor, on_delete=models.DO_NOTHING, verbose_name="Заказчик")
     executor = models.ForeignKey(Executor, on_delete=models.DO_NOTHING, verbose_name="Исполнитель")
