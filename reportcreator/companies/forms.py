@@ -14,21 +14,23 @@
 Все данные о пользователях сохраняются в базе данных `auth_user`?
 """
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser
+from .models import CompanyUser
 from django import forms
-from companies import models as companies
 
 class SignUpForm(UserCreationForm):
-    last_name = forms.CharField(max_length=63, help_text='Введите вашу фамилию.')
-    first_name = forms.CharField(max_length=63, help_text='Введите ваше имя.')
-    patronymic = forms.CharField(max_length=63, required=False, help_text='Введите ваше отчество (если имеется).')
-    related_company = forms.ModelChoiceField(queryset=companies.Executor.objects.all(), help_text='Выберите вашу компанию. Если не уверены в вашей компании - оставьте поле пустым и обратитесь к Администратору.')
+    company_username = forms.CharField(max_length=32, help_text='Введите логин компании')
+    # TODO: Сделать автоматический перевод название компании в формате "общ. с огр. ответ. 'Лия' -> ООО 'Лия'"
+    company_name = forms.CharField(max_length=63, help_text='Введите полное название компании.')
+    director_post = forms.CharField(max_length=32, help_text='Введите должность руководителя компании', initial='Директор')
+    director_last_name = forms.CharField(max_length=63, help_text='Введите фамилию руководителя компании')
+    diretor_first_name = forms.CharField(max_length=63, help_text='Введите имя руководителя компании')
+    director_patronymic = forms.CharField(max_length=63, help_text='Введите отчество руководителя компании')
     
     # TODO: Написать проверку пароля так, чтобы он проверялся через регулярное выражение
     class Meta:
-        model = CustomUser
-        fields = ('username', 'last_name', 'first_name', 'patronymic', 'related_company', 'password1', 'password2')
+        model = CompanyUser
+        fields = ('company_username', 'company_name', 'director_post', 'director_last_name', 'diretor_first_name', 'director_patronymic', 'password1', 'password2')
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Имя пользователя')
+    username = forms.CharField(label='Логин компании')
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)

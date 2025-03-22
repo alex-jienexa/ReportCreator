@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from pages import views as pages_views
-from users.views import signup_view, login_view
+from companies.views import signup_view, login_view
 from documents.views import create_document, create_template, get_template_fields
 
 urlpatterns = [

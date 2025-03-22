@@ -1,6 +1,5 @@
 from django.db import models
 from companies.models import Executor, Contractor
-from users.models import CustomUser
 
 
 from django.db import models
@@ -56,7 +55,6 @@ class Document(models.Model):
     contrator = models.ForeignKey(Contractor, on_delete=models.DO_NOTHING, verbose_name="Заказчик")
     executor = models.ForeignKey(Executor, on_delete=models.DO_NOTHING, verbose_name="Исполнитель")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    created_by = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, verbose_name="Создатель")
     showDate = models.DateField(verbose_name="Отображаемая дата")
     table = models.JSONField(default=list)
     custom = models.JSONField(default=dict)

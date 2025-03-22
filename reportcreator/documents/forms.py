@@ -1,7 +1,7 @@
 from django import forms
 from .models import Document, Template
 from companies.models import Executor, Contractor
-from users.models import CustomUser
+from django.db.utils import OperationalError
 
 class TemplateForm(forms.ModelForm):
     class Meta:
@@ -11,18 +11,20 @@ class TemplateForm(forms.ModelForm):
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['template', 'id', 'contrator', 'executor', 'created_by', 'showDate']
+        fields = ['template', 'id', 'contrator', 'executor', 'showDate']
         widgets = {
             'showDate': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    id = forms.IntegerField(required=True, initial=Document.objects.all().last().id + 1)
+    try:
+        id = forms.IntegerField(required=True, initial=Document.objects.all().last().id + 1)
+    except OperationalError:
+        pass
 
     def __init__(self, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
         self.fields['contrator'].queryset = Contractor.objects.all()
         self.fields['executor'].queryset = Executor.objects.all()
-        self.fields['created_by'].queryset = CustomUser.objects.all()
 
         # Динамически добавляем поля для переменных шаблона
         if 'template' in self.data:
