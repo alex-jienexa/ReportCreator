@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'companies',
     'users',
     'documents',
+    'frontend',
 ]
 
 MIDDLEWARE = [

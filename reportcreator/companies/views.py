@@ -15,7 +15,7 @@ def signup_view(request):
     return render(request, 'register.html', {'form': form})
 
 def login_view(request):
-    form = LoginForm(data=request.POST or None)
+    form = LoginForm(data=request.POST)
     if request.method == 'POST':
         if form.is_valid():
             username = form.cleaned_data['username']

@@ -25,7 +25,7 @@ class Template(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название шаблона")
     type = models.CharField(max_length=10, choices=DOCUMENT_TYPES, verbose_name="Тип документа")
     file = models.FileField(upload_to='docs/templates/', verbose_name="Файл шаблона")
-    custom = models.JSONField(default=dict, verbose_name="Дополнительные переменные")
+    custom = models.JSONField(default=dict, verbose_name="Дополнительные переменные") # Пока не работает но хз
     related_company = models.ForeignKey(Contractor, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Связанная компания")
 
     def __str__(self):

@@ -17,7 +17,7 @@ class DocumentForm(forms.ModelForm):
         }
 
     try:
-        id = forms.IntegerField(required=True, initial=Document.objects.all().last().id + 1)
+        id = forms.IntegerField(required=True, initial=Document.objects.all().last().id + 1 if Document.objects.all().exists() else 1),
     except OperationalError:
         pass
 
