@@ -1,0 +1,42 @@
+<form method="post" enctype="multipart/form-data" id="template-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div id="custom-fields">
+        <div class="custom-field">
+            <input type="text" name="custom_field_name[]" placeholder="Название переменной">
+            <select name="custom_field_type[]">
+                <option value="text">Текст</option>
+                <option value="number">Число</option>
+                <option value="date">Дата</option>
+                <option value="money">Денежная сумма</option>
+                <option value="person">Личность</option>
+            </select>
+            <button type="button" class="add-field">+</button>
+        </div>
+    </div>
+    <button type="submit">Создать шаблон</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const customFields = document.getElementById('custom-fields');
+        const addButton = document.querySelector('.add-field');
+
+        addButton.addEventListener('click', function() {
+            const newField = document.createElement('div');
+            newField.classList.add('custom-field');
+            newField.innerHTML = `
+                <input type="text" name="custom_field_name[]" placeholder="Название переменной">
+                <select name="custom_field_type[]">
+                    <option value="text">Текст</option>
+                    <option value="number">Число</option>
+                    <option value="date">Дата</option>
+                    <option value="money">Денежная сумма</option>
+                    <option value="person">Личность</option>
+                </select>
+                <button type="button" class="add-field">+</button>
+            `;
+            customFields.appendChild(newField);
+        });
+    });
+</script>
