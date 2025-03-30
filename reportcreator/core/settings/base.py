@@ -11,28 +11,31 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import environ
+import os
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    SECRET_KEY=(str, ''),
-)
+PRODUCTION_MODE = os.getenv('MODE', "") == "PRODUCTION"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-environ.Env.read_env(BASE_DIR / '.env') # reading .env file
+
+if PRODUCTION_MODE:
+    from .prod import *
+else:
+    from dotenv import load_dotenv
+
+    load_dotenv(BASE_DIR / ".env")
+    from .dev import *
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    ")rx*@m2#9#($a%o1yvr*d4@s8-!4^!_h9dsjj&#iwm&&b7oq*y")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -44,9 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pages',
-    'companies',
-    'users',
+    'corsheaders',
+    'rest_framework',
+    'backend',
+    'frontend',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -57,9 +62,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'reportcreator.urls'
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny"
+    ]
+}
+
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -77,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'reportcreator.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
@@ -113,9 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC+3'
 
 USE_I18N = True
 
@@ -132,4 +144,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "users.CustomUser"
+#AUTH_USER_MODEL = "companies.CompanyUser"
