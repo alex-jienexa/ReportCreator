@@ -1,5 +1,5 @@
 from django.db import models
-from .companies import Executor, Contractor
+from .company import Executor, Contractor
 
 
 from django.db import models
