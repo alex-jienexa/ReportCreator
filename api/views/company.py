@@ -18,24 +18,25 @@ from backend.models.user import User
 @permission_classes([AllowAny])
 def register_company(request):
     company_name = request.data.get("company_name")
+    company_fullName = request.data.get("company_fullName")
     username = request.data.get("username")
-    email = request.data.get("email")
     password = request.data.get("password")
     
-    if not all([company_name, username, email, password]):
+    if not all([company_name, username, password]):
         return Response(
             {"error": "Нужно заполнение всех полей"},
             status=status.HTTP_400_BAD_REQUEST
         )
     
     # Создаем компанию
-    company = Executor.objects.create(name=company_name)
+    company = Executor.objects.create(
+        company_name=company_name,
+        company_fullName=company_fullName)
     
     # Создаем суперпользователя компании
     try:
         user = User.objects.create_user(
             username=username,
-            email=email,
             password=password,
             company=company,
             is_superuser_of_company=True,
@@ -64,7 +65,7 @@ def register_company(request):
 def get_company_info(request):
     if not request.user.company:
         return Response(
-            {"error": "User has no company"},
+            {"error": "У пользователя нет компании"},
             status=status.HTTP_400_BAD_REQUEST
         )
     

@@ -47,7 +47,7 @@ def login_view(request):
             "user": serializer.data
         })
     return Response(
-        {"error": "Invalid credentials"},
+        {"error": "Неправильные данные"},
         status=status.HTTP_400_BAD_REQUEST
     )
 
@@ -63,10 +63,9 @@ def logout_view(request):
 @permission_classes([IsAuthenticated, IsCompanySuperuser])
 def register_user(request):
     username = request.data.get("username")
-    email = request.data.get("email")
     password = request.data.get("password")
     
-    if not all([username, email, password]):
+    if not all([username, password]):
         return Response(
             {"error": "Необходимы все поля"},
             status=status.HTTP_400_BAD_REQUEST
@@ -75,7 +74,6 @@ def register_user(request):
     try:
         user = User.objects.create_user(
             username=username,
-            email=email,
             password=password,
             company=request.user.company  # Привязываем к компании суперпользователя
         )

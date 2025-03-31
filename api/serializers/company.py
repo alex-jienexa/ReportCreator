@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from backend.models import Company
+from backend.models.company import Executor
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Company
-        fields = ['id', 'name', 'description', 'created_at']
+        model = Executor
+        fields = ['id', 'company_name', 'company_fullName', 'created_at']
