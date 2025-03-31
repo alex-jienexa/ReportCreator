@@ -64,8 +64,11 @@ def logout_view(request):
 def register_user(request):
     username = request.data.get("username")
     password = request.data.get("password")
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    patronymic = request.data.get("patronymic")
     
-    if not all([username, password]):
+    if not all([username, password, first_name, last_name]):
         return Response(
             {"error": "Необходимы все поля"},
             status=status.HTTP_400_BAD_REQUEST
@@ -75,7 +78,10 @@ def register_user(request):
         user = User.objects.create_user(
             username=username,
             password=password,
-            company=request.user.company  # Привязываем к компании суперпользователя
+            company=request.user.company,  # Привязываем к компании суперпользователя
+            first_name=first_name,
+            last_name=last_name,
+            patronymic=patronymic,
         )
     except Exception as e:
         return Response(
