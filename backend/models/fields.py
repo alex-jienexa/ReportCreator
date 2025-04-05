@@ -13,7 +13,7 @@ class Field(models.Model):
         
 
     name = models.CharField(max_length=50, verbose_name='Русское название поля (для отображения)')
-    englName = models.CharField(max_length=50, verbose_name='Английское название поля (по которому будет доступ в API)')
+    englName = models.CharField(max_length=50, verbose_name='Английское название поля (по которому будет доступ в API)', primary_key=True)
     relatedItem = models.CharField(max_length=30, editable=False, verbose_name='К какому виду записи относится это поле (заполняется программно)')
     type = models.CharField(max_length=10, verbose_name='Тип поля', choices=FIELD_TYPES, default="TEXT")
     placeholder = models.CharField(max_length=50, null=True, verbose_name='Подсказка для заполнения поля')

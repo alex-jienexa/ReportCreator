@@ -134,6 +134,11 @@ def create_user_field(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_user_fields(request):
+    # Проверяем существование обязательных полей
+    if not Field.objects.filter(relatedItem="User").exists():   
+        from backend.migrations.initial_fields_0005 import create_initial_user_fields
+        create_initial_user_fields()  # Ваша функция создания полей
+    
     field = Field.objects.filter(relatedItem="User")
     serializer = UserFieldSerializer(field, many=True)
     return Response(serializer.data)
