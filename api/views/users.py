@@ -1,15 +1,16 @@
 from rest_framework.decorators import api_view, permission_classes
 # Permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from api.permissions import IsCompanySuperuser
+from api.permissions import IsCompanySuperuser, IsDebug
 # Serializers
-from api.serializers.user import UserSerializer
+from api.serializers.users import UserSerializer, UserFieldSerializer
 # Response
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 # models
 from backend.models.user import User
+from backend.models.fields import Field
 
 # --- CSRF ---
 
@@ -93,3 +94,46 @@ def register_user(request):
         "status": "success",
         "user": UserSerializer(user).data
     }, status=status.HTTP_201_CREATED)
+
+
+# --- Поля для пользователей ---
+
+@api_view(["POST"])
+@permission_classes([IsCompanySuperuser|IsDebug])
+def create_user_field(request):
+    name = request.data.get("name")
+    englName = request.data.get("englName")
+    type = request.data.get("type")
+    placeholder = request.data.get("placeholder")
+    check_regex = request.data.get("checkRegex")
+
+    if not all([name, englName]):
+        return Response({"error": "Не указаны необходимые поля `name` или `englName`"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        field = Field.objects.create(
+            name=name,
+            englName=englName,
+            type=type,
+            placeholder=placeholder,
+            checkRegex=check_regex,
+            relatedItem="User",
+        )
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    return Response({
+        "status": "success",
+        "field": UserFieldSerializer(field).data
+    }, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_user_fields(request):
+    field = Field.objects.filter(relatedItem="User")
+    serializer = UserFieldSerializer(field, many=True)
+    return Response(serializer.data)

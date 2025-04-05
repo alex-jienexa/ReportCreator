@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from core.settings import base as settings
 
 class IsCompanySuperuser(permissions.BasePermission):
     message = "Вы должны быть суперпользователем компании, чтобы выполнить это действие"
@@ -9,3 +10,7 @@ class IsCompanySuperuser(permissions.BasePermission):
             request.user.is_authenticated and
             request.user.is_superuser_of_company
         )
+
+class IsDebug(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return settings.DEBUG

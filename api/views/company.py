@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 # Permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 # Serializers
-from api.serializers.user import UserSerializer
+from api.serializers.users import UserSerializer
 from api.serializers.company import CompanySerializer
 # Response & auth
 from rest_framework.response import Response
