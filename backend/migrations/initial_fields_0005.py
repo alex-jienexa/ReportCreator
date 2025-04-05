@@ -8,22 +8,6 @@ def create_initial_user_fields(apps, schema_editor):
 
     initial_fields = [
         {
-            'name': 'Логин',
-            'englName': 'username',
-            'placeholder': 'Введите логин',
-            'type': 'TEXT',
-            'checkRegex': '^[a-zA-Z0-9]+$',
-            'relatedItem': "User"
-        },
-        {
-            'name': 'Пароль',
-            'englName': 'password',
-            'placeholder': 'Введите пароль',
-            'type': 'PASSWORD',
-            'checkRegex': '^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$',
-            'relatedItem': "User"
-        },
-        {
             'name': 'Фамилия',
             'englName': 'last_name',
             'placeholder': 'Ваша фамилия',

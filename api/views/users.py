@@ -194,3 +194,5 @@ def field_value_detail(request, pk):
     elif request.method == "DELETE":
         user_value.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# TODO: Сделать методы, которые позволяю посмотреть данные о всех пользователях.
