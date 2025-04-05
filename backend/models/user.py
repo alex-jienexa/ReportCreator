@@ -20,9 +20,6 @@ class User(AbstractUser):
     related_company - компания, которой принадлежит пользователь. Является полем таблицы `companies.Executor`.
     """
     username = models.CharField(max_length=150, unique=True, null=False)
-    last_name = models.CharField(max_length=63, null=False)
-    first_name = models.CharField(max_length=63, null=False)
-    patronymic = models.CharField(max_length=63, null=True)
     company = models.ForeignKey(Executor, on_delete=models.CASCADE, related_name='users', null=True, blank=True)
     is_company_superuser = models.BooleanField(default=False)
 

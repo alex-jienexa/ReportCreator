@@ -22,11 +22,8 @@ def register_company(request):
     company_fullName = request.data.get("company_fullName")
     username = request.data.get("username")
     password = request.data.get("password")
-    first_name = request.data.get("first_name")
-    last_name = request.data.get("last_name")
-    patronymic = request.data.get("patronymic")
     
-    if not all([company_name, username, password, first_name, last_name]):
+    if not all([company_name, username, password]):
         return Response(
             {"error": "Нужно заполнение всех полей"},
             status=status.HTTP_400_BAD_REQUEST
@@ -43,9 +40,6 @@ def register_company(request):
             username=username,
             password=password,
             company=company,
-            first_name=first_name,
-            last_name=last_name,
-            patronymic=patronymic,
             is_superuser_of_company=True,
             is_staff=True  # для доступа к админке если нужно
         )
