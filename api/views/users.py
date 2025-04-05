@@ -3,13 +3,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from api.permissions import IsCompanySuperuser, IsDebug
 # Serializers
-from api.serializers.users import UserSerializer, UserFieldSerializer
+from api.serializers.users import UserSerializer, UserFieldSerializer, UserFieldValueSerializer
 # Response
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 # models
-from backend.models.user import User
+from backend.models.user import User, UsersValues
 from backend.models.fields import Field
 
 # --- CSRF ---
@@ -90,6 +90,18 @@ def register_user(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
+    required_fields = Field.objects.filter(
+        relatedItem="User",
+        is_required=True
+    )
+
+    for field in required_fields:
+        UsersValues.objects.create(
+            user=user,
+            field=field,
+            value=request.data.get(field.englName, "")
+        )
+    
     return Response({
         "status": "success",
         "user": UserSerializer(user).data
@@ -142,3 +154,49 @@ def get_user_fields(request):
     field = Field.objects.filter(relatedItem="User")
     serializer = UserFieldSerializer(field, many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def field_values_list(request):
+    """
+    Получить и/или добавить значения полей для пользователя.
+    """
+    if request.method == "GET":
+        users_values = UsersValues.objects.filter(user=request.user)
+        serializer = UserFieldValueSerializer(users_values, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == "POST":
+        serializer = UserFieldValueSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+def field_value_detail(request, pk):
+    """
+    Получить, изменить или удалить иформацию о конкретном поле `pk` для пользователя.
+    """
+    try:
+        user_value = UsersValues.objects.get(pk=pk, user=request.user)
+    except UsersValues.DoesNotExist:
+        return Response({"error": "Поле не найдено"}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "GET":
+        serializer = UserFieldValueSerializer(user_value)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == "PUT":
+        serializer = UserFieldValueSerializer(user_value, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == "DELETE":
+        user_value.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

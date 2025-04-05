@@ -10,7 +10,8 @@ from rest_framework import status
 from django.contrib.auth import login
 # models
 from backend.models.company import Executor
-from backend.models.user import User
+from backend.models.user import User, UsersValues
+from backend.models.fields import Field
 
 # --- Регистрация компании и суперпользователя ---
 
@@ -53,6 +54,18 @@ def register_company(request):
         return Response(
             {"error": str(e)},
             status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    required_fields = Field.objects.filter(
+        relatedItem="User",
+        is_required=True
+    )
+
+    for field in required_fields:
+        UsersValues.objects.create(
+            user=user,
+            field=field,
+            value=request.data.get(field.englName, "")
         )
     
     # Автоматический логин после регистрации

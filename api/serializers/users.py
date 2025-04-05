@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from backend.models import User
+from backend.models.user import UsersValues
 from backend.models.fields import Field
 from .company import CompanySerializer
 
@@ -31,3 +32,24 @@ class UserFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
         fields = '__all__'
+
+class UserFieldValueSerializer(serializers.ModelSerializer):
+    field = UserFieldSerializer(read_only=True)
+    field_id = serializers.PrimaryKeyRelatedField(
+        queryset=Field.objects.filter(relatedItem="User"),
+        write_only=True,
+        source='field'
+    )
+
+    class Meta:
+        model = UsersValues
+        fields = ["id", "field", "field_id", "value", "created_at", "updated_at"]
+        read_only_fields = ["created_at", "updated_at"]
+
+    def validate(self, data):
+        # Проверяем, что поле принадлежит к типу "User"
+        if data.get('field') and data['field'].relatedItem != "User":
+            raise serializers.ValidationError(
+                "Field должен относиться к User"
+            )
+        return data
